@@ -64,6 +64,8 @@ export interface Product {
   price: number;
   compare_price?: number;
   cost_price?: number;
+  meta_title?: string;
+  meta_description?: string;
   category_id?: string;
   category_name?: string;
   category_slug?: string;
