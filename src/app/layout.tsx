@@ -3,6 +3,7 @@ import { DM_Sans, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/layout/Providers';
 import { Toaster } from 'react-hot-toast';
+import "@uploadthing/react/styles.css";
 
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-display' });

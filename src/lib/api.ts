@@ -136,16 +136,26 @@ export const bannerApi = {
 // ── Admin ─────────────────────────────────────────────
 export const adminApi = {
   getDashboard: () => api.get('/admin/dashboard'),
+  // Orders
   getOrders: (params?: object) => api.get('/admin/orders', { params }),
   updateOrderStatus: (id: string, data: object) => api.put(`/admin/orders/${id}/status`, data),
+  // Products
   getProducts: (params?: object) => api.get('/admin/products', { params }),
   createProduct: (data: object) => api.post('/admin/products', data),
   updateProduct: (id: string, data: object) => api.put(`/admin/products/${id}`, data),
   deleteProduct: (id: string) => api.delete(`/admin/products/${id}`),
-  getCustomers: (params?: object) => api.get('/admin/customers', { params }),
-  getCategories: () => api.get('/categories'),
+  // Categories
+  getCategories: () => api.get('/admin/categories'),
   createCategory: (data: object) => api.post('/admin/categories', data),
   updateCategory: (id: string, data: object) => api.put(`/admin/categories/${id}`, data),
+  deleteCategory: (id: string) => api.delete(`/admin/categories/${id}`),
+  // Customers
+  getCustomers: (params?: object) => api.get('/admin/customers', { params }),
+  // Coupons
   getCoupons: () => api.get('/admin/coupons'),
   createCoupon: (data: object) => api.post('/admin/coupons', data),
+  // Banners
+  getBanners: () => api.get('/banners'),
+  createBanner: (data: object) => api.post('/admin/banners', data),
+  updateBanner: (id: string, data: object) => api.put(`/admin/banners/${id}`, data),
 };
