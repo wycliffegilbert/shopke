@@ -3,10 +3,10 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { CheckCircle, Package, ArrowRight, Truck, Clock, MapPin } from 'lucide-react';
+import { CheckCircle, Package, ArrowRight, Clock, MapPin } from 'lucide-react';
 import { orderApi } from '@/lib/api';
 import { formatCurrency, formatDate, ORDER_STATUS_CONFIG, cn } from '@/lib/utils';
-import { OrderStatus } from '@/types';
+import { Order, OrderStatus } from '@/types';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -16,7 +16,7 @@ function SuccessContent() {
     queryKey: ['order', orderId],
     queryFn: () => orderApi.getOne(orderId!),
     enabled: !!orderId,
-    select: d => d.data.data,
+    select: (d): Order => d.data.data as Order,
   });
 
   if (isLoading) {
@@ -30,9 +30,8 @@ function SuccessContent() {
     );
   }
 
-  const statusCfg = order?.status
-    ? ORDER_STATUS_CONFIG[order.status as OrderStatus]
-    : null;
+  const status = order?.status as OrderStatus | undefined;
+  const statusCfg = status ? ORDER_STATUS_CONFIG[status] : null;
 
   return (
     <div className="max-w-lg mx-auto">
@@ -146,14 +145,10 @@ function SuccessContent() {
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <Link
-          href="/account/orders"
-          className="flex-1 btn-primary flex items-center justify-center gap-2 py-3.5">
+        <Link href="/account/orders" className="flex-1 btn-primary flex items-center justify-center gap-2 py-3.5">
           <Package size={16} /> Track My Order
         </Link>
-        <Link
-          href="/products"
-          className="flex-1 btn-secondary flex items-center justify-center gap-2 py-3.5">
+        <Link href="/products" className="flex-1 btn-secondary flex items-center justify-center gap-2 py-3.5">
           Continue Shopping <ArrowRight size={16} />
         </Link>
       </div>
