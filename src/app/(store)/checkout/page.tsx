@@ -207,7 +207,7 @@ export default function CheckoutPage() {
                     <label className="block text-sm font-medium mb-1.5">County</label>
                     <select {...register('county')} className="input">
                       <option value="">Select county</option>
-                      {[...new Set(COUNTIES)].sort().map(c => <option key={c} value={c}>{c}</option>)}
+                      {Array.from(new Set(COUNTIES)).sort().map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                     {errors.county && <p className="text-xs text-red-500 mt-1">{errors.county.message}</p>}
                   </div>
