@@ -159,3 +159,13 @@ export const adminApi = {
   createBanner: (data: object) => api.post('/admin/banners', data),
   updateBanner: (id: string, data: object) => api.put(`/admin/banners/${id}`, data),
 };
+
+// ── Uploads ───────────────────────────────────────────
+export const uploadApi = {
+  uploadImage: (base64Image: string, folder?: string) =>
+    api.post('/upload/image', { image: base64Image, folder }, {
+      timeout: 60000, // 60s timeout for large images
+    }),
+  deleteImage: (public_id: string) =>
+    api.delete('/upload/image', { data: { public_id } }),
+};
