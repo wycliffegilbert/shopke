@@ -127,11 +127,11 @@ export const useWishlistStore = create<WishlistState>()(
       setWishlist: (items) => set({ items, itemIds: new Set(items.map(i => i.product_id)) }),
       addItem: (item) => set(state => ({
         items: [item, ...state.items],
-        itemIds: new Set([...state.itemIds, item.product_id]),
+        itemIds: new Set(Array.from(state.itemIds).concat(item.product_id)),
       })),
       removeItem: (productId) => set(state => ({
         items: state.items.filter(i => i.product_id !== productId),
-        itemIds: new Set([...state.itemIds].filter(id => id !== productId)),
+        itemIds: new Set(Array.from(state.itemIds).filter(id => id !== productId)),
       })),
       hasItem: (productId) => get().itemIds.has(productId),
     }),
