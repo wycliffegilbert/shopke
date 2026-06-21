@@ -10,14 +10,14 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-displa
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: { default: "ShopKE — Kenya's #1 Online Store", template: '%s | ShopKE' },
+  title: { default: "TrendsVault — Kenya's #1 Online Store", template: '%s | TrendsVault' },
   description: 'Shop thousands of authentic products delivered anywhere in Kenya. Fast, secure, and always the best prices.',
-  keywords: ['online shopping', 'Kenya', 'electronics', 'fashion', 'ShopKE'],
+  keywords: ['online shopping', 'Kenya', 'electronics', 'fashion', 'TrendsVault'],
   openGraph: {
     type: 'website',
     locale: 'en_KE',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    siteName: 'ShopKE',
+    siteName: 'TrendsVault',
   },
 };
 

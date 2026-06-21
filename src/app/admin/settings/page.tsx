@@ -29,9 +29,9 @@ export default function AdminSettingsPage() {
     confirmPassword: '',
   });
   const [store, setStore] = useState({
-    name: 'ShopKE',
+    name: 'TrendsVault',
     tagline: "Kenya's #1 Online Store",
-    email: 'support@shopke.co.ke',
+    email: 'support@trendsvault.co.ke',
     phone: '+254 700 000 000',
     address: 'Westlands, Nairobi, Kenya',
     currency: 'KES',
@@ -313,9 +313,9 @@ export default function AdminSettingsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { key: 'name', label: 'Store Name', placeholder: 'ShopKE' },
+                  { key: 'name', label: 'Store Name', placeholder: 'TrendsVault' },
                   { key: 'tagline', label: 'Tagline', placeholder: "Kenya's #1 Online Store" },
-                  { key: 'email', label: 'Support Email', placeholder: 'support@shopke.co.ke', type: 'email' },
+                  { key: 'email', label: 'Support Email', placeholder: 'support@trendsvault.co.ke', type: 'email' },
                   { key: 'phone', label: 'Support Phone', placeholder: '+254 700 000 000' },
                 ].map(f => (
                   <div key={f.key}>

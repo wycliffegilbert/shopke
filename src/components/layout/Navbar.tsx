@@ -77,7 +77,7 @@ export default function Navbar() {
           <div className="flex items-center h-16 gap-4">
             {/* Logo */}
             <Link href="/" className="font-display text-xl font-bold text-primary-900 flex-shrink-0">
-              Shop<span className="text-accent">KE</span>
+            Trends<span className="text-accent">Vault</span>
             </Link>
 
             {/* Category Links */}
