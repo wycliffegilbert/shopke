@@ -239,7 +239,7 @@ export default function HomePage() {
         {/* Slide Indicators */}
         {slideCount > 1 && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            {heroSlides.map((_, i) => (
+            {heroSlides.map((_: any, i: number) => (
               <button key={i} onClick={() => setSlide(i)}
                 className={cn('rounded-full transition-all', i === slide ? 'bg-accent w-8 h-2' : 'bg-white/30 w-2 h-2 hover:bg-white/50')} />
             ))}
