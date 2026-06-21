@@ -1,17 +1,12 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, ShoppingBag, Star, TrendingUp, Zap, Shield, RotateCcw, Headphones } from 'lucide-react';
+import { ArrowRight, ShoppingBag, Star, TrendingUp, Zap, Shield, RotateCcw, Headphones, ChevronLeft, ChevronRight, Sparkles, Package } from 'lucide-react';
 import { productApi, categoryApi } from '@/lib/api';
 import ProductCard from '@/components/shop/ProductCard';
-import { cn, formatCurrency } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-
-const HERO_SLIDES = [
-  { tag: '🔥 Flash Sale', title: 'Up to 30% Off', subtitle: 'Top Electronics', desc: 'Smartphones, laptops, headphones and more — all at Kenya\'s best prices.', cta: '/products?category=electronics&sale=true', bg: 'from-slate-900 to-slate-800', emoji: '🎧', accent: 'Electronics' },
-  { tag: '✨ New Arrivals', title: 'Fresh Drops', subtitle: 'Just for You', desc: 'Discover the latest products added daily. Be the first to own something new.', cta: '/products?new_arrival=true', bg: 'from-slate-900 to-slate-800', emoji: '📱', accent: 'New In' },
-  { tag: '🌟 Best Sellers', title: 'Loved by', subtitle: '120K+ Kenyans', desc: 'Our most popular products — tried, tested, and highly rated by real customers.', cta: '/products?best_seller=true', bg: 'from-slate-900 to-slate-800', emoji: '💻', accent: 'Popular' },
-];
+import { cn, formatCurrency, getDiscountPercentage } from '@/lib/utils';
+import { useState, useEffect, useMemo } from 'react';
 
 const TESTIMONIALS = [
   { name: 'Wanjiru Kamau', location: 'Nairobi', rating: 5, text: 'Ordered a MacBook Friday evening — delivered Saturday noon in Westlands. Packaging was excellent and price was the best I found anywhere online.', avatar: 'WK', color: 'bg-slate-800' },
@@ -27,6 +22,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 export default function HomePage() {
   const [slide, setSlide] = useState(0);
   const [countdown, setCountdown] = useState({ h: 8, m: 34, s: 22 });
+  const [isPaused, setIsPaused] = useState(false);
 
   // Countdown timer
   useEffect(() => {
@@ -37,12 +33,6 @@ export default function HomePage() {
         return { h, m, s };
       });
     }, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  // Auto-advance slides
-  useEffect(() => {
-    const t = setInterval(() => setSlide(s => (s + 1) % HERO_SLIDES.length), 5000);
     return () => clearInterval(t);
   }, []);
 
@@ -58,6 +48,13 @@ export default function HomePage() {
     select: d => d.data.data,
   });
 
+  // Hero slideshow pulls real New Arrivals — falls back to featured/best sellers if empty
+  const { data: heroNewArrivals } = useQuery({
+    queryKey: ['products', 'hero-new-arrivals'],
+    queryFn: () => productApi.getAll({ new_arrival: true, limit: 6, sort: 'created_at', order: 'desc' }),
+    select: d => d.data.data,
+  });
+
   const { data: newArrivalsData } = useQuery({
     queryKey: ['products', 'new-arrivals'],
     queryFn: () => productApi.getAll({ new_arrival: true, limit: 4 }),
@@ -70,71 +67,184 @@ export default function HomePage() {
     select: d => d.data.data,
   });
 
-  const currentSlide = HERO_SLIDES[slide];
+  // Build hero slides from real new arrival products
+  const heroSlides = useMemo(() => {
+    const list = heroNewArrivals || [];
+    if (!list.length) return [];
+    return list.slice(0, 6).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      slug: p.slug,
+      price: p.price,
+      compare_price: p.compare_price,
+      brand: p.brand,
+      image: p.primary_image || p.images?.[0]?.url,
+      rating: p.average_rating,
+      reviewCount: p.review_count,
+    }));
+  }, [heroNewArrivals]);
+
+  const slideCount = heroSlides.length;
+
+  // Auto-advance slides
+  useEffect(() => {
+    if (isPaused || slideCount <= 1) return;
+    const t = setInterval(() => setSlide(s => (s + 1) % slideCount), 5000);
+    return () => clearInterval(t);
+  }, [slideCount, isPaused]);
+
+  const nextSlide = () => setSlide(s => (s + 1) % Math.max(slideCount, 1));
+  const prevSlide = () => setSlide(s => (s - 1 + slideCount) % Math.max(slideCount, 1));
+
+  const currentSlide = heroSlides[slide];
+  const currentDiscount = currentSlide?.compare_price
+    ? getDiscountPercentage(currentSlide.price, currentSlide.compare_price)
+    : null;
 
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
     <div>
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <section className={cn('relative bg-gradient-to-br text-white overflow-hidden', currentSlide.bg)}>
+      {/* ── HERO: New Arrivals Slideshow ────────────────── */}
+      <section
+        className="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 70% 50%, #F97316 0%, transparent 60%)' }} />
-        <div className="container-pad py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="animate-fade-in">
-            <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-orange-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-              {currentSlide.tag}
-            </span>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4">
-              {currentSlide.title}<br />
-              <span className="text-accent">{currentSlide.subtitle}</span>
-            </h1>
-            <p className="text-gray-300 text-base sm:text-lg mb-8 max-w-lg leading-relaxed">{currentSlide.desc}</p>
-            <div className="flex flex-wrap gap-4">
-              <Link href={currentSlide.cta}
-                className="inline-flex items-center gap-2 bg-accent hover:bg-orange-600 text-white px-7 py-3.5 rounded-xl font-semibold transition-colors">
-                <ShoppingBag size={18} /> Shop Now
-              </Link>
-              <Link href="/products"
-                className="inline-flex items-center gap-2 border border-white/20 hover:bg-white/10 text-white px-7 py-3.5 rounded-xl font-semibold transition-colors">
-                Browse All <ArrowRight size={16} />
-              </Link>
-            </div>
-            <div className="flex gap-10 mt-10">
-              {[['50K+', 'Products'], ['120K+', 'Customers'], ['4.9★', 'Rating']].map(([n, l]) => (
-                <div key={l}>
-                  <div className="font-display text-2xl font-bold text-white">{n}</div>
-                  <div className="text-xs text-gray-400 mt-0.5 uppercase tracking-wider">{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="hidden lg:flex justify-center">
-            <div className="relative">
-              <div className="bg-white/8 border border-white/15 rounded-3xl p-8 w-80 backdrop-blur-sm">
-                <div className="bg-white/10 rounded-2xl h-52 flex items-center justify-center text-8xl mb-5">
-                  {currentSlide.emoji}
-                </div>
-                <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-lg font-bold text-white">{currentSlide.accent}</p>
-                    <p className="text-gray-400 text-sm">Top picks this week</p>
-                  </div>
-                  <div className="text-2xl font-bold text-accent font-display">30% OFF</div>
-                </div>
+        {!heroSlides.length ? (
+          // Loading skeleton
+          <div className="container-pad py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 animate-pulse">
+            <div>
+              <div className="h-7 w-40 bg-white/10 rounded-full mb-6" />
+              <div className="h-14 w-3/4 bg-white/10 rounded-xl mb-3" />
+              <div className="h-14 w-1/2 bg-white/10 rounded-xl mb-6" />
+              <div className="h-5 w-full max-w-md bg-white/10 rounded mb-8" />
+              <div className="flex gap-4">
+                <div className="h-12 w-36 bg-white/10 rounded-xl" />
+                <div className="h-12 w-36 bg-white/10 rounded-xl" />
               </div>
-              <div className="absolute -top-4 -right-4 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl">Best Seller</div>
+            </div>
+            <div className="hidden lg:block h-80 bg-white/5 rounded-3xl" />
+          </div>
+        ) : (
+          <div className="container-pad py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div key={currentSlide.id} className="animate-fade-in">
+              <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-orange-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
+                <Sparkles size={14} /> New Arrival
+                {currentSlide.brand && <span className="text-white/60">· {currentSlide.brand}</span>}
+              </span>
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 line-clamp-2">
+                {currentSlide.name}
+              </h1>
+
+              {currentSlide.rating > 0 && (
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={15} className={i < Math.round(currentSlide.rating) ? 'fill-amber-400 text-amber-400' : 'text-white/20'} />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-300">{Number(currentSlide.rating).toFixed(1)} ({currentSlide.reviewCount || 0} reviews)</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3 mb-8">
+                <span className="font-display text-3xl sm:text-4xl font-bold text-accent">
+                  {formatCurrency(currentSlide.price)}
+                </span>
+                {currentSlide.compare_price && (
+                  <>
+                    <span className="text-lg text-gray-400 line-through">{formatCurrency(currentSlide.compare_price)}</span>
+                    {currentDiscount && (
+                      <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">−{currentDiscount}%</span>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <Link href={`/products/${currentSlide.slug}`}
+                  className="inline-flex items-center gap-2 bg-accent hover:bg-orange-600 text-white px-7 py-3.5 rounded-xl font-semibold transition-colors">
+                  <ShoppingBag size={18} /> View Product
+                </Link>
+                <Link href="/products?new_arrival=true"
+                  className="inline-flex items-center gap-2 border border-white/20 hover:bg-white/10 text-white px-7 py-3.5 rounded-xl font-semibold transition-colors">
+                  All New Arrivals <ArrowRight size={16} />
+                </Link>
+              </div>
+
+              <div className="flex gap-10 mt-10">
+                {[['50K+', 'Products'], ['120K+', 'Customers'], ['4.9★', 'Rating']].map(([n, l]) => (
+                  <div key={l}>
+                    <div className="font-display text-2xl font-bold text-white">{n}</div>
+                    <div className="text-xs text-gray-400 mt-0.5 uppercase tracking-wider">{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Product image card */}
+            <div className="hidden lg:flex justify-center">
+              <div className="relative w-80">
+                <div key={currentSlide.id} className="bg-white/8 border border-white/15 rounded-3xl p-6 backdrop-blur-sm animate-fade-in">
+                  <div className="relative bg-white/10 rounded-2xl h-72 overflow-hidden mb-5">
+                    {currentSlide.image ? (
+                      <Image
+                        src={currentSlide.image}
+                        alt={currentSlide.name}
+                        fill
+                        className="object-cover"
+                        sizes="320px"
+                        priority
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package size={56} className="text-white/30" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div className="min-w-0">
+                      <p className="text-base font-bold text-white truncate">{currentSlide.name}</p>
+                      <p className="text-gray-400 text-sm">{currentSlide.brand || 'New In'}</p>
+                    </div>
+                    <div className="text-xl font-bold text-accent font-display flex-shrink-0 ml-2">
+                      {formatCurrency(currentSlide.price)}
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -top-4 -right-4 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1">
+                  <Sparkles size={12} /> Just Dropped
+                </div>
+
+                {/* Prev / Next arrows */}
+                {slideCount > 1 && (
+                  <>
+                    <button onClick={prevSlide}
+                      className="absolute top-1/2 -translate-y-1/2 -left-5 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center transition-colors">
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button onClick={nextSlide}
+                      className="absolute top-1/2 -translate-y-1/2 -right-5 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center transition-colors">
+                      <ChevronRight size={18} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Slide Indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-          {HERO_SLIDES.map((_, i) => (
-            <button key={i} onClick={() => setSlide(i)}
-              className={cn('rounded-full transition-all', i === slide ? 'bg-accent w-8 h-2' : 'bg-white/30 w-2 h-2')} />
-          ))}
-        </div>
+        {slideCount > 1 && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {heroSlides.map((_, i) => (
+              <button key={i} onClick={() => setSlide(i)}
+                className={cn('rounded-full transition-all', i === slide ? 'bg-accent w-8 h-2' : 'bg-white/30 w-2 h-2 hover:bg-white/50')} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── FEATURES BAR ─────────────────────────────────── */}
