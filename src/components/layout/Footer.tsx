@@ -105,7 +105,7 @@ export default function Footer() {
           {/* Brand col */}
           <div className="col-span-2">
             <Link href="/" className="font-display text-2xl font-bold text-white inline-block mb-4">
-              Shop<span className="text-accent">KE</span>
+              Trends<span className="text-accent">Vault</span>
             </Link>
             <p className="text-sm leading-relaxed max-w-xs text-gray-500 mb-5">
               Kenya's premier online marketplace. Fast delivery, genuine products, and unbeatable prices — serving all 47 counties.
@@ -127,7 +127,7 @@ export default function Footer() {
               <a href="mailto:support@shopke.co.ke"
                 className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-accent transition-colors">
                 <Mail size={14} className="text-accent flex-shrink-0" />
-                support@shopke.co.ke
+                support@trendsvault.co.ke
               </a>
             </div>
 
@@ -196,7 +196,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-600">
-            © {new Date().getFullYear()} ShopKE Limited. All rights reserved. Built with ❤️ in Nairobi, Kenya.
+            © {new Date().getFullYear()} TrendsVault Limited. All rights reserved. Powered by Spire Africa Technologies.
           </p>
 
           {/* Payment icons */}

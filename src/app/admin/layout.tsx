@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Logo */}
         <div className="p-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
           <Link href="/" className="font-display text-xl font-bold">
-            Shop<span className="text-accent">KE</span>
+            Trends<span className="text-accent">Vault</span>
             <span className="text-xs text-gray-400 font-sans font-normal ml-1">Admin</span>
           </Link>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-400 hover:text-white">
