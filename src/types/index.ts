@@ -52,6 +52,7 @@ export interface ProductVariant {
   price_modifier: number;
   stock_quantity: number;
   sku?: string;
+  weight?: number;
 }
 
 export interface Product {
@@ -61,6 +62,7 @@ export interface Product {
   description?: string;
   short_description?: string;
   sku?: string;
+  weight?: number;
   price: number;
   compare_price?: number;
   cost_price?: number;
@@ -135,6 +137,7 @@ export interface OrderItem {
   product_name: string;
   product_image?: string;
   sku?: string;
+  weight?: number;
   quantity: number;
   unit_price: number;
   total_price: number;

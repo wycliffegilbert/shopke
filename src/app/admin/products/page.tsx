@@ -239,7 +239,7 @@ function ProductModal({ product, categories, onClose }: {
                   <BarChart3 size={14} className="inline mr-2" />
                   Profit margin: <strong>{margin}%</strong>
                   {form.price && form.cost_price && (
-                    <span className="ml-2">· Profit: {formatCurrency((parseFloat(form.price) - parseFloat(form.cost_price)).toString())}</span>
+                    <span className="ml-2">· Profit: {formatCurrency(parseFloat(form.price) - parseFloat(form.cost_price))}</span>
                   )}
                 </div>
               )}
