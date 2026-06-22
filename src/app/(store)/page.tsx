@@ -125,13 +125,63 @@ export default function HomePage() {
                 <div className="h-12 w-36 bg-white/10 rounded-xl" />
               </div>
             </div>
-            <div className="hidden lg:block h-80 bg-white/5 rounded-3xl" />
+            <div className="h-56 sm:h-72 lg:h-80 bg-white/5 rounded-3xl" />
           </div>
         ) : (
-          <div className="container-pad py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div key={currentSlide.id} className="animate-fade-in">
-              <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-orange-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-                <Sparkles size={14} /> New Arrival
+          <div className="container-pad py-10 sm:py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
+            {/* Product image card — visible on ALL screen sizes, appears first on mobile */}
+            <div className="flex justify-center order-1 lg:order-2">
+              <div className="relative w-full max-w-xs sm:max-w-sm lg:w-80">
+                <div key={currentSlide.id} className="bg-white/8 border border-white/15 rounded-3xl p-4 sm:p-6 backdrop-blur-sm animate-fade-in">
+                  <div className="relative bg-white/10 rounded-2xl h-48 sm:h-64 lg:h-72 overflow-hidden mb-4 sm:mb-5">
+                    {currentSlide.image ? (
+                      <Image
+                        src={currentSlide.image}
+                        alt={currentSlide.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 320px, 384px"
+                        priority
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package size={48} className="text-white/30" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div className="min-w-0">
+                      <p className="text-sm sm:text-base font-bold text-white truncate">{currentSlide.name}</p>
+                      <p className="text-gray-400 text-xs sm:text-sm">{currentSlide.brand || 'New In'}</p>
+                    </div>
+                    <div className="text-lg sm:text-xl font-bold text-accent font-display flex-shrink-0 ml-2">
+                      {formatCurrency(currentSlide.price)}
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl flex items-center gap-1">
+                  <Sparkles size={11} /> Just Dropped
+                </div>
+
+                {/* Prev / Next arrows — visible on all screens */}
+                {slideCount > 1 && (
+                  <>
+                    <button onClick={prevSlide}
+                      className="absolute top-1/2 -translate-y-1/2 -left-2 sm:-left-5 w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center transition-colors">
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button onClick={nextSlide}
+                      className="absolute top-1/2 -translate-y-1/2 -right-2 sm:-right-5 w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center transition-colors">
+                      <ChevronRight size={16} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div key={`text-${currentSlide.id}`} className="animate-fade-in order-2 lg:order-1 text-center lg:text-left">
+              <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-orange-300 px-3.5 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+                <Sparkles size={13} /> New Arrival
                 {currentSlide.brand && <span className="text-white/60">· {currentSlide.brand}</span>}
               </span>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 line-clamp-2">
@@ -139,7 +189,7 @@ export default function HomePage() {
               </h1>
 
               {currentSlide.rating > 0 && (
-                <div className="flex items-center gap-2 mb-5">
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-4 sm:mb-5">
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} size={15} className={i < Math.round(currentSlide.rating) ? 'fill-amber-400 text-amber-400' : 'text-white/20'} />
@@ -149,7 +199,7 @@ export default function HomePage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-3 mb-8">
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-6 sm:mb-8">
                 <span className="font-display text-3xl sm:text-4xl font-bold text-accent">
                   {formatCurrency(currentSlide.price)}
                 </span>
@@ -163,7 +213,7 @@ export default function HomePage() {
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4">
                 <Link href={`/products/${currentSlide.slug}`}
                   className="inline-flex items-center gap-2 bg-accent hover:bg-orange-600 text-white px-7 py-3.5 rounded-xl font-semibold transition-colors">
                   <ShoppingBag size={18} /> View Product
@@ -174,63 +224,13 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="flex gap-10 mt-10">
+              <div className="flex justify-center lg:justify-start gap-6 sm:gap-10 mt-8 sm:mt-10">
                 {[['50K+', 'Products'], ['120K+', 'Customers'], ['4.9★', 'Rating']].map(([n, l]) => (
                   <div key={l}>
                     <div className="font-display text-2xl font-bold text-white">{n}</div>
                     <div className="text-xs text-gray-400 mt-0.5 uppercase tracking-wider">{l}</div>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Product image card */}
-            <div className="hidden lg:flex justify-center">
-              <div className="relative w-80">
-                <div key={currentSlide.id} className="bg-white/8 border border-white/15 rounded-3xl p-6 backdrop-blur-sm animate-fade-in">
-                  <div className="relative bg-white/10 rounded-2xl h-72 overflow-hidden mb-5">
-                    {currentSlide.image ? (
-                      <Image
-                        src={currentSlide.image}
-                        alt={currentSlide.name}
-                        fill
-                        className="object-cover"
-                        sizes="320px"
-                        priority
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package size={56} className="text-white/30" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex justify-between items-end">
-                    <div className="min-w-0">
-                      <p className="text-base font-bold text-white truncate">{currentSlide.name}</p>
-                      <p className="text-gray-400 text-sm">{currentSlide.brand || 'New In'}</p>
-                    </div>
-                    <div className="text-xl font-bold text-accent font-display flex-shrink-0 ml-2">
-                      {formatCurrency(currentSlide.price)}
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute -top-4 -right-4 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1">
-                  <Sparkles size={12} /> Just Dropped
-                </div>
-
-                {/* Prev / Next arrows */}
-                {slideCount > 1 && (
-                  <>
-                    <button onClick={prevSlide}
-                      className="absolute top-1/2 -translate-y-1/2 -left-5 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center transition-colors">
-                      <ChevronLeft size={18} />
-                    </button>
-                    <button onClick={nextSlide}
-                      className="absolute top-1/2 -translate-y-1/2 -right-5 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center transition-colors">
-                      <ChevronRight size={18} />
-                    </button>
-                  </>
-                )}
               </div>
             </div>
           </div>
@@ -245,6 +245,64 @@ export default function HomePage() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* ── FEATURED PRODUCTS ────────────────────────────── */}
+      <section className="container-pad pb-16">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="section-title">Featured Products</h2>
+            <p className="text-gray-500 text-sm mt-1">Hand-picked deals just for you</p>
+          </div>
+          <Link href="/products?featured=true" className="text-sm text-accent font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+            View all <ArrowRight size={15} />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {featuredData?.map((p: any) => <ProductCard key={p.id} product={p} />)}
+          {!featuredData && [...Array(8)].map((_, i) => (
+            <div key={i} className="card animate-pulse">
+              <div className="aspect-square bg-gray-100 rounded-t-2xl" />
+              <div className="p-4 space-y-2">
+                <div className="h-3 bg-gray-100 rounded w-1/3" />
+                <div className="h-4 bg-gray-100 rounded w-4/5" />
+                <div className="h-4 bg-gray-100 rounded w-3/5" />
+                <div className="h-6 bg-gray-100 rounded w-1/2 mt-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── NEW ARRIVALS + BEST SELLERS ──────────────────── */}
+      <section className="container-pad pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* New Arrivals */}
+          <div>
+            <div className="flex items-end justify-between mb-6">
+              <h2 className="section-title text-2xl">New Arrivals</h2>
+              <Link href="/products?new_arrival=true" className="text-sm text-accent font-semibold flex items-center gap-1">
+                All new <ArrowRight size={15} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {newArrivalsData?.map((p: any) => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+
+          {/* Best Sellers */}
+          <div>
+            <div className="flex items-end justify-between mb-6">
+              <h2 className="section-title text-2xl">Best Sellers</h2>
+              <Link href="/products?best_seller=true" className="text-sm text-accent font-semibold flex items-center gap-1">
+                All popular <ArrowRight size={15} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {bestSellersData?.map((p: any) => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── FEATURES BAR ─────────────────────────────────── */}
@@ -313,64 +371,6 @@ export default function HomePage() {
                   <div className="text-[10px] text-gray-400 uppercase mt-1">{label}</div>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED PRODUCTS ────────────────────────────── */}
-      <section className="container-pad pb-16">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="section-title">Featured Products</h2>
-            <p className="text-gray-500 text-sm mt-1">Hand-picked deals just for you</p>
-          </div>
-          <Link href="/products?featured=true" className="text-sm text-accent font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-            View all <ArrowRight size={15} />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {featuredData?.map((p: any) => <ProductCard key={p.id} product={p} />)}
-          {!featuredData && [...Array(8)].map((_, i) => (
-            <div key={i} className="card animate-pulse">
-              <div className="aspect-square bg-gray-100 rounded-t-2xl" />
-              <div className="p-4 space-y-2">
-                <div className="h-3 bg-gray-100 rounded w-1/3" />
-                <div className="h-4 bg-gray-100 rounded w-4/5" />
-                <div className="h-4 bg-gray-100 rounded w-3/5" />
-                <div className="h-6 bg-gray-100 rounded w-1/2 mt-2" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── NEW ARRIVALS + BEST SELLERS ──────────────────── */}
-      <section className="container-pad pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* New Arrivals */}
-          <div>
-            <div className="flex items-end justify-between mb-6">
-              <h2 className="section-title text-2xl">New Arrivals</h2>
-              <Link href="/products?new_arrival=true" className="text-sm text-accent font-semibold flex items-center gap-1">
-                All new <ArrowRight size={15} />
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {newArrivalsData?.map((p: any) => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </div>
-
-          {/* Best Sellers */}
-          <div>
-            <div className="flex items-end justify-between mb-6">
-              <h2 className="section-title text-2xl">Best Sellers</h2>
-              <Link href="/products?best_seller=true" className="text-sm text-accent font-semibold flex items-center gap-1">
-                All popular <ArrowRight size={15} />
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {bestSellersData?.map((p: any) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
         </div>
