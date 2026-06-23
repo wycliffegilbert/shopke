@@ -116,7 +116,7 @@ export default function Footer() {
               <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-accent transition-colors group">
                 <MapPin size={14} className="text-accent flex-shrink-0" />
-                Westlands, Nairobi, Kenya
+                  Nairobi, Kenya
                 <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <a href="tel:+254700000000"
