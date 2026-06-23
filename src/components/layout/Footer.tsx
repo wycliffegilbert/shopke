@@ -41,7 +41,7 @@ const FOOTER_LINKS = {
 const SOCIAL_LINKS = [
   { icon: Facebook, href: 'https://www.facebook.com/share/1ERzM6xGxm', label: 'Facebook' },
   { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
+  { icon: Instagram, href: 'https://www.instagram.com/trends.vaults?igsh=MW84Ym55cG5nOHc0Nw==', label: 'Instagram' },
   { icon: Youtube, href: '#', label: 'YouTube' },
 ];
 
