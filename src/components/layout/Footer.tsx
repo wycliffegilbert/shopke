@@ -23,7 +23,7 @@ const FOOTER_LINKS = {
     { label: 'Returns & Refunds', href: '/returns' },
   ],
   Company: [
-    { label: 'About ShopKE', href: '/about' },
+    { label: 'About TrendsVault', href: '/about' },
     { label: 'Careers', href: '/careers' },
     { label: 'Blog', href: '/blog' },
     { label: 'Become a Vendor', href: '/vendor' },
@@ -122,12 +122,12 @@ export default function Footer() {
               <a href="tel:+254700000000"
                 className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-accent transition-colors">
                 <Phone size={14} className="text-accent flex-shrink-0" />
-                +254 700 000 000
+                +254 715 545 278
               </a>
-              <a href="mailto:support@shopke.co.ke"
+              <a href="mailto:support@TrendsVault.co.ke"
                 className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-accent transition-colors">
                 <Mail size={14} className="text-accent flex-shrink-0" />
-                support@trendsvault.co.ke
+                trendsvaultnairobi@gmail.com
               </a>
             </div>
 
