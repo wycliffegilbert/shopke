@@ -39,7 +39,7 @@ const FOOTER_LINKS = {
 };
 
 const SOCIAL_LINKS = [
-  { icon: Facebook, href: '#', label: 'Facebook' },
+  { icon: Facebook, href: 'https://www.facebook.com/share/1ERzM6xGxm', label: 'Facebook' },
   { icon: Twitter, href: '#', label: 'Twitter' },
   { icon: Instagram, href: '#', label: 'Instagram' },
   { icon: Youtube, href: '#', label: 'YouTube' },
@@ -119,12 +119,12 @@ export default function Footer() {
                   Nairobi, Kenya
                 <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <a href="tel:+254700000000"
+              <a href="tel:+254715545278"
                 className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-accent transition-colors">
                 <Phone size={14} className="text-accent flex-shrink-0" />
                 +254 715 545 278
               </a>
-              <a href="mailto:support@TrendsVault.co.ke"
+              <a href="@TrendsVault.co.kemailto:support"
                 className="flex items-center gap-2.5 text-sm text-gray-500 hover:text-accent transition-colors">
                 <Mail size={14} className="text-accent flex-shrink-0" />
                 trendsvaultnairobi@gmail.com
