@@ -80,6 +80,7 @@ export const authApi = {
 export const productApi = {
   getAll: (params?: object) => api.get('/products', { params }),
   getOne: (slug: string) => api.get(`/products/${slug}`),
+  getBySlug: (slug: string) => api.get(`/products/${slug}`),
   search: (q: string) => api.get('/products/search/suggestions', { params: { q } }),
   getFilters: (category?: string) => api.get('/products/filters', { params: { category } }),
   getReviews: (id: string, params?: object) => api.get(`/products/${id}/reviews`, { params }),
@@ -115,17 +116,25 @@ export const orderApi = {
 
 // ── Payments ──────────────────────────────────────────
 export const paymentApi = {
-  createStripeIntent: (order_id: string) => api.post('/payments/stripe/create-intent', { order_id }),
-  stkPush: (order_id: string, phone: string) => api.post('/payments/mpesa/stk-push', { order_id, phone }),
-  mpesaStatus: (checkout_request_id: string) => api.get(`/payments/mpesa/status/${checkout_request_id}`),
-  createPaypalOrder: (order_id: string) => api.post('/payments/paypal/create-order', { order_id }),
-  capturePaypal: (paypal_order_id: string, order_id: string) =>
-    api.post('/payments/paypal/capture', { paypal_order_id, order_id }),
+  // M-Pesa
+  mpesaStkPush: (data: { phone: string; amount: number; order_id: string; order_number?: string }) =>
+    api.post('/payments/mpesa/stk-push', data),
+  queryMpesaStatus: (checkout_request_id: string) =>
+    api.get(`/payments/mpesa/status/${checkout_request_id}`),
+  // Paystack
+  paystackInitialize: (data: { email: string; amount: number; order_id: string; order_number?: string }) =>
+    api.post('/payments/paystack/initialize', data),
+  paystackVerify: (reference: string) =>
+    api.get(`/payments/paystack/verify/${reference}`),
+  // Coupon validation
+  validateCoupon: (code: string, order_amount: number) =>
+    api.post('/coupons/validate', { code, order_amount }),
 };
 
 // ── Coupons ───────────────────────────────────────────
 export const couponApi = {
-  validate: (code: string, order_amount: number) => api.post('/coupons/validate', { code, order_amount }),
+  validate: (code: string, order_amount: number) =>
+    api.post('/coupons/validate', { code, order_amount }),
 };
 
 // ── Banners ───────────────────────────────────────────
@@ -163,9 +172,7 @@ export const adminApi = {
 // ── Uploads ───────────────────────────────────────────
 export const uploadApi = {
   uploadImage: (base64Image: string, folder?: string) =>
-    api.post('/upload/image', { image: base64Image, folder }, {
-      timeout: 60000, // 60s timeout for large images
-    }),
+    api.post('/upload/image', { image: base64Image, folder }, { timeout: 60000 }),
   deleteImage: (public_id: string) =>
     api.delete('/upload/image', { data: { public_id } }),
 };
