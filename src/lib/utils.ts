@@ -20,8 +20,12 @@ export const formatDateTime = (date: string) =>
     hour: '2-digit', minute: '2-digit',
   });
 
-export const getDiscountPercentage = (price: number, comparePrice: number) =>
-  Math.round(((comparePrice - price) / comparePrice) * 100);
+export const getDiscountPercentage = (price: number | string, comparePrice: number | string): number => {
+  const p = parseFloat(price.toString());
+  const c = parseFloat(comparePrice.toString());
+  if (!c || c <= p) return 0;
+  return Math.round(((c - p) / c) * 100);
+};
 
 export const truncate = (str: string, length: number) =>
   str?.length > length ? `${str.substring(0, length)}...` : str;
